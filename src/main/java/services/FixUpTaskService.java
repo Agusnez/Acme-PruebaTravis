@@ -53,18 +53,20 @@ public class FixUpTaskService {
 
 	}
 
-	public FixUpTask save(final FixUpTask s) {
-
-		final FixUpTask fixUpTask = this.fixUpTaskRepository.save(s);
+	public FixUpTask save(final FixUpTask fixUpTask) {
 
 		Assert.notNull(fixUpTask);
 
-		return fixUpTask;
+		final FixUpTask result = this.fixUpTaskRepository.save(fixUpTask);
+
+		return result;
 
 	}
 
 	public void delete(final FixUpTask fixUpTask) {
 
+		Assert.notNull(fixUpTask);
+		Assert.isTrue(fixUpTask.getId() != 0);
 		this.fixUpTaskRepository.delete(fixUpTask);
 	}
 

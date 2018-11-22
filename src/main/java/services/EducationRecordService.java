@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import repositories.EducationRecordReposiroty;
+import domain.Curriculum;
 import domain.EducationRecord;
+import domain.HandyWorker;
 
 @Service
 @Transactional
@@ -20,14 +22,22 @@ public class EducationRecordService {
 	@Autowired
 	private EducationRecordReposiroty	educationRecordRepository;
 
-
 	// Suporting services
+
+	@Autowired
+	private CurriculumService			curriculumService;
+
+	@Autowired
+	private HandyWorkerService			handyWorkerService;
+
 
 	// Simple CRUD methods
 
 	public EducationRecord create() {
 
-		final EducationRecord result = new EducationRecord();
+		final EducationRecord result;
+
+		result = new EducationRecord();
 
 		return result;
 
@@ -35,37 +45,42 @@ public class EducationRecordService {
 
 	public Collection<EducationRecord> findAll() {
 
-		final Collection<EducationRecord> educationRecords = this.educationRecordRepository.findAll();
+		Collection<EducationRecord> result;
 
-		Assert.notNull(educationRecords);
+		result = this.educationRecordRepository.findAll();
+		Assert.notNull(result);
 
-		return educationRecords;
+		return result;
 
 	}
 
-	public EducationRecord findOne(final int educationRecordID) {
+	public EducationRecord findOne(final int educationRecordId) {
 
-		final EducationRecord educationRecord = this.educationRecordRepository.findOne(educationRecordID);
+		EducationRecord result;
+
+		result = this.educationRecordRepository.findOne(educationRecordId);
+
+		return result;
+
+	}
+
+	public EducationRecord save(final EducationRecord educationRecord) {
 
 		Assert.notNull(educationRecord);
+		EducationRecord result;
 
-		return educationRecord;
+		result = this.educationRecordRepository.save(educationRecord);
 
-	}
+		final HandyWorker handyWorker = this.handyWorkerService.findByPrincipal();
+		Assert.notNull(handyWorker);
 
-	public EducationRecord save(final EducationRecord s) {
+		final Curriculum curriculum = this.curriculumService.findByHandyWorkerId(handyWorker.getId());
+		Assert.notNull(curriculum);
+		curriculum.getEducationRecords().add(result);
+		this.curriculumService.save(curriculum);
 
-		final EducationRecord educationRecord = this.educationRecordRepository.save(s);
+		return result;
 
-		Assert.notNull(educationRecord);
-
-		return educationRecord;
-
-	}
-
-	public void delete(final EducationRecord educationRecord) {
-
-		this.educationRecordRepository.delete(educationRecord);
 	}
 
 	// Other business methods
