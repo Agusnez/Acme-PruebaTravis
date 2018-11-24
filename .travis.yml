@@ -2,10 +2,6 @@ sudo: required
 language: java
 jdk: oraclejdk7
 
-branches:
-  only:
-    - agus
-
 services: mysql
 
 before_script:
