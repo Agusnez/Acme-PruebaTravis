@@ -8,7 +8,7 @@ branches:
 
 services: mysql
 
-before_install:
+before_script:
   - mysql -e 'CREATE DATABASE Acme-HandyWorker;'
   - sudo mysql -e "USE mysql; UPDATE mysql.user SET user='acme-user', password=PASSWORD('ACME-Us3r-P@ssw0rd') WHERE user='root'; FLUSH PRIVILEGES;"
   - sudo mysql_upgrade
