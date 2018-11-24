@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.transaction.Transactional;
@@ -10,11 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import repositories.AdministratorRepository;
+import security.Authority;
 import domain.Actor;
 import domain.Administrator;
 import domain.Box;
-import domain.Customer;
-import domain.HandyWorker;
 
 @Service
 @Transactional
@@ -39,37 +39,12 @@ public class AdministratorService {
 
 		final Actor actor = this.actorService.findByPrincipal();
 		Assert.notNull(actor);
-		Assert.isTrue(!(actor.getUserAccount().getAuthorities().toString().contains("ADMIN")));
+		final Authority authority = new Authority();
+		authority.setAuthority(Authority.ADMIN);
+		Assert.isTrue(!(actor.getUserAccount().getAuthorities().contains(authority)));
 
 		Administrator result;
 		result = new Administrator();
-
-		Box inBox, outBox, trashBox, spamBox;
-
-		inBox = this.boxService.create();
-		outBox = this.boxService.create();
-		trashBox = this.boxService.create();
-		spamBox = this.boxService.create();
-
-		inBox.setName("inBox");
-		outBox.setName("outBox");
-		trashBox.setName("trashBox");
-		spamBox.setName("spamBox");
-
-		inBox.setByDefault(true);
-		outBox.setByDefault(true);
-		trashBox.setByDefault(true);
-		spamBox.setByDefault(true);
-
-		inBox.setActor(result);
-		outBox.setActor(result);
-		trashBox.setActor(result);
-		spamBox.setActor(result);
-
-		inBox = this.boxService.save(inBox);
-		outBox = this.boxService.save(outBox);
-		trashBox = this.boxService.save(trashBox);
-		spamBox = this.boxService.save(spamBox);
 
 		return result;
 
@@ -95,123 +70,51 @@ public class AdministratorService {
 	public Administrator save(final Administrator administrator) {
 
 		Assert.notNull(administrator);
+		final Actor actor = this.actorService.findByPrincipal();
+		Assert.notNull(actor);
+
+		Assert.isTrue(actor.getId() == administrator.getId());
+
 		Administrator result;
 		result = this.administratorRepository.save(administrator);
+
+		if (administrator.getId() == 0) {
+			Box inBox, outBox, trashBox, spamBox;
+
+			inBox = this.boxService.create();
+			outBox = this.boxService.create();
+			trashBox = this.boxService.create();
+			spamBox = this.boxService.create();
+
+			inBox.setName("inBox");
+			outBox.setName("outBox");
+			trashBox.setName("trashBox");
+			spamBox.setName("spamBox");
+
+			inBox.setByDefault(true);
+			outBox.setByDefault(true);
+			trashBox.setByDefault(true);
+			spamBox.setByDefault(true);
+
+			inBox.setActor(result);
+			outBox.setActor(result);
+			trashBox.setActor(result);
+			spamBox.setActor(result);
+
+			final Collection<Box> boxes = new ArrayList<>();
+			boxes.add(spamBox);
+			boxes.add(trashBox);
+			boxes.add(inBox);
+			boxes.add(outBox);
+
+			inBox = this.boxService.saveNewActor(inBox);
+			outBox = this.boxService.saveNewActor(outBox);
+			trashBox = this.boxService.saveNewActor(trashBox);
+			spamBox = this.boxService.saveNewActor(spamBox);
+
+		}
 		return result;
 	}
 
 	// Other business methods -----------------------
-
-	public Collection<Double> statsOfFixUpTasksPerCustomer() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfFixUpTasksPerCustomer();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<Double> statsOfApplicationsPerFixUpTask() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfApplicationsPerFixUpTask();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<Double> statsOfMaximumPricePerFixUpTask() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfMaximumPricePerFixUpTask();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Collection<Double> statsOfOfferedPricePerApplication() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfOfferedPricePerApplication();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Double ratioOfApplicationsPending() {
-
-		final Double result = this.administratorRepository.ratioOfApplicationsPending();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Double ratioOfApplicationsAccepted() {
-
-		final Double result = this.administratorRepository.ratioOfApplicationsAccepted();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Double ratioOfApplicationsRejected() {
-
-		final Double result = this.administratorRepository.ratioOfApplicationsRejected();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Double ratioOfApplicationsPendingElapsedPeriod() {
-
-		final Double result = this.administratorRepository.ratioOfApplicationsPendingElapsedPeriod();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Collection<Customer> customersTenPerCentMore() {
-
-		final Collection<Customer> result = this.administratorRepository.customersTenPerCentMore();
-		Assert.notNull(result);
-		return result;
-	}
-
-	public Collection<HandyWorker> handyWorkersTenPerCentMore() {
-
-		final Collection<HandyWorker> result = this.administratorRepository.handyWorkersTenPerCentMore();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<Double> statsOfComplaintsPerFixUpTask() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfComplaintsPerFixUpTask();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<Double> statsOfNotesPerReport() {
-
-		final Collection<Double> result = this.administratorRepository.statsOfNotesPerReport();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Double ratioOfFixUpTasksWithComplaint() {
-
-		final Double result = this.administratorRepository.ratioOfFixUpTasksWithComplaint();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<Customer> topThreeCustomersComplaints() {
-
-		final Collection<Customer> result = this.administratorRepository.topThreeCustomersComplaints();
-		Assert.notNull(result);
-		return result;
-
-	}
-
-	public Collection<HandyWorker> topThreeHandyWorkersComplaints() {
-
-		final Collection<HandyWorker> result = this.administratorRepository.topThreeHandyWorkersComplaints();
-		Assert.notNull(result);
-		return result;
-
-	}
 }

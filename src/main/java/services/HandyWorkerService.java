@@ -1,7 +1,9 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import org.springframework.util.Assert;
 import repositories.HandyWorkerRepository;
 import security.LoginService;
 import security.UserAccount;
+import domain.Box;
+import domain.Finder;
 import domain.HandyWorker;
 
 @Service
@@ -21,13 +25,27 @@ public class HandyWorkerService {
 	@Autowired
 	private HandyWorkerRepository	handyWorkerRepository;
 
-
 	//Suporting services---------------------------------
+	@Autowired
+	private FinderService			finderService;
+
+	@Autowired
+	private BoxService				boxService;
+
 
 	//Simple CRUD methods--------------------------------
-	public HandyWorker create() { //Lo de los 4 Boxes   y crear finder
+	public HandyWorker create() {
 		HandyWorker hw;
+		Finder find;
+
+		find = this.finderService.create();
 		hw = new HandyWorker();
+		final UserAccount user = new UserAccount();
+
+		find.setHandyWorker(hw);
+		hw.setMake(hw.getName() + hw.getMiddleName() + hw.getSurname());
+		hw.setUserAccount(user);
+
 		return hw;
 	}
 
@@ -46,17 +64,51 @@ public class HandyWorkerService {
 	}
 
 	public HandyWorker save(final HandyWorker handyWorker) {
+
+		final int id = LoginService.getPrincipal().getId();
+
+		Assert.isTrue(id == handyWorker.getId());
 		Assert.notNull(handyWorker);
+
 		HandyWorker hw;
 		hw = this.handyWorkerRepository.save(handyWorker);
-		return hw;
-	}
 
-	public void delete(final HandyWorker handyWorker) {
-		Assert.notNull(handyWorker);
-		Assert.isTrue(handyWorker.getId() != 0);
-		//Faltan cosas con respecto a las aplication y todo lo demas
-		this.handyWorkerRepository.delete(handyWorker);
+		if (handyWorker.getId() == 0) {
+			Box inBox, outBox, trashBox, spamBox;
+
+			inBox = this.boxService.create();
+			outBox = this.boxService.create();
+			trashBox = this.boxService.create();
+			spamBox = this.boxService.create();
+
+			inBox.setName("inBox");
+			outBox.setName("outBox");
+			trashBox.setName("trashBox");
+			spamBox.setName("spamBox");
+
+			inBox.setByDefault(true);
+			outBox.setByDefault(true);
+			trashBox.setByDefault(true);
+			spamBox.setByDefault(true);
+
+			inBox.setActor(hw);
+			outBox.setActor(hw);
+			trashBox.setActor(hw);
+			spamBox.setActor(hw);
+
+			final Collection<Box> boxes = new ArrayList<>();
+			boxes.add(spamBox);
+			boxes.add(trashBox);
+			boxes.add(inBox);
+			boxes.add(outBox);
+
+			inBox = this.boxService.saveNewActor(inBox);
+			outBox = this.boxService.saveNewActor(outBox);
+			trashBox = this.boxService.saveNewActor(trashBox);
+			spamBox = this.boxService.saveNewActor(spamBox);
+
+		}
+		return hw;
 	}
 
 	//Other business methods----------------------------
@@ -83,6 +135,25 @@ public class HandyWorkerService {
 		return result;
 	}
 
-	//MIRAR LOS DOS ULTIMOS DE CUSTOMER DE CERITIFICATION
+	public Collection<HandyWorker> handyWorkersTenPerCentMore() {
+
+		final Collection<HandyWorker> result = this.handyWorkerRepository.handyWorkersTenPerCentMore();
+		Assert.notNull(result);
+		return result;
+
+	}
+
+	public Collection<HandyWorker> topThreeHandyWorkersComplaints() {
+
+		final Collection<HandyWorker> handyWorkers = this.handyWorkerRepository.rankingHandyWorkersComplaints();
+		Assert.notNull(handyWorkers);
+
+		final List<HandyWorker> ranking = new ArrayList<HandyWorker>();
+		ranking.addAll(handyWorkers);
+		final Collection<HandyWorker> result = ranking.subList(0, 3);
+
+		return result;
+
+	}
 
 }

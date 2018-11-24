@@ -1,6 +1,7 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +32,9 @@ public class BoxService {
 
 	public Box create() {
 
-		final Actor actor = this.actorService.findByPrincipal();
-		Assert.notNull(actor);
-
 		Box result;
 
 		result = new Box();
-
-		result.setActor(actor);
-
-		result = this.save(result);
 
 		return result;
 
@@ -68,6 +62,25 @@ public class BoxService {
 
 	public Box save(final Box box) {
 
+		final Actor actor = this.actorService.findByPrincipal();
+		Assert.notNull(actor);
+
+		final Actor owner = box.getActor();
+
+		Assert.isTrue(actor.getId() == owner.getId());
+
+		Assert.isTrue(!box.getByDefault());
+
+		Assert.notNull(box);
+
+		final Box result = this.boxRepository.save(box);
+
+		return result;
+
+	}
+
+	public Box saveNewActor(final Box box) {
+
 		Assert.notNull(box);
 
 		final Box result = this.boxRepository.save(box);
@@ -78,12 +91,49 @@ public class BoxService {
 
 	public void delete(final Box box) {
 
+		final Actor actor = this.actorService.findByPrincipal();
+		Assert.notNull(actor);
+
+		final Actor owner = box.getActor();
+
+		Assert.isTrue(actor.getId() == owner.getId());
+
 		Assert.notNull(box);
 		Assert.isTrue(box.getId() != 0);
-		Assert.isTrue(box.getByDefault() == true);
+		Assert.isTrue(box.getByDefault() == false);
 		this.boxRepository.delete(box);
 
 	}
 	// Other business methods
+
+	public Box findTrashBoxByActorId(final int actorId) {
+		Box result;
+		result = this.boxRepository.findTrashBoxByActorId(actorId);
+		return result;
+	}
+
+	public Box findInBoxByActorId(final int actorId) {
+		Box result;
+		result = this.boxRepository.findInBoxByActorId(actorId);
+		return result;
+	}
+
+	public Box findOutBoxByActorId(final int actorId) {
+		Box result;
+		result = this.boxRepository.findOutBoxByActorId(actorId);
+		return result;
+	}
+
+	public Box findSpamBoxByActorId(final int actorId) {
+		Box result;
+		result = this.boxRepository.findSpamBoxByActorId(actorId);
+		return result;
+	}
+
+	public Collection<Box> findAllBoxByActor(final int actorId) {
+		Collection<Box> boxes = new ArrayList<Box>();
+		boxes = this.boxRepository.findAllBoxByActorId(actorId);
+		return boxes;
+	}
 
 }

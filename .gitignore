@@ -1,4 +1,5 @@
 .project
-.settings/
-target/m2e-wtp/web-resources/META-INF/maven/Design-and-Testing/Acme-HandyWorker/pom\.properties
+.settings/org.eclipse.core.resources.prefs
+*.class
+*.properties
 ._*
