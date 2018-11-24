@@ -1,0 +1,44 @@
+-------------------------------------------------------------------------------
+Test set: services.BoxServiceTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 0.047 s <<< FAILURE! - in services.BoxServiceTest
+testDeleteBoxDefault(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testDeleteBoxDefault(BoxServiceTest.java:144)
+
+testFindTrashBoxByActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testFindTrashBoxByActor(BoxServiceTest.java:207)
+
+testFindOutBoxByActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testFindOutBoxByActor(BoxServiceTest.java:193)
+
+test4DefaultBoxesNewActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.test4DefaultBoxesNewActor(BoxServiceTest.java:100)
+
+testFindAllBoxByActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testFindAllBoxByActor(BoxServiceTest.java:259)
+
+testSaveBoxNewActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testSaveBoxNewActor(BoxServiceTest.java:79)
+
+testFindInBoxByActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testFindInBoxByActor(BoxServiceTest.java:179)
+
+testFindSpamBoxByActor(services.BoxServiceTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.IllegalArgumentException: [Assertion failed] - this argument is required; it must not be null
+	at services.BoxServiceTest.createNewActorAndLogIn(BoxServiceTest.java:306)
+	at services.BoxServiceTest.testFindSpamBoxByActor(BoxServiceTest.java:221)
+
