@@ -8,8 +8,8 @@ before_script:
 - sudo mysql_upgrade
 - sudo mysql -e "create user 'acme-user'@'%' identified by 'ACME-Us3r-P@ssw0rd';"
 - sudo mysql -e  "create user 'acme-manager'@'%' identified by 'ACME-M@n@ger-6874';"
-- sudo mysql -e "grant select, insert, update, delete on `Acme-HandyWorker`.* to 'acme-user'@'%';"
-- sudo mysql -e "grant select, insert, update, delete, create, drop, references, index, alter, create temporary tables, lock tables, create view, create routine, alter routine, execute, trigger, show view on `Acme-HandyWorker`.* to 'acme-manager'@'%';"
+- sudo mysql -e "grant select, insert, update, delete on 'Acme-HandyWorker'.* to 'acme-user'@'%';"
+- sudo mysql -e "grant select, insert, update, delete, create, drop, references, index, alter, create temporary tables, lock tables, create view, create routine, alter routine, execute, trigger, show view on 'Acme-HandyWorker'.* to 'acme-manager'@'%';"
 - sudo mysql -e "create database 'Acme-HandyWorker';"
 - javac src/main/java/utilities/PopulateDatabase.java
 - java src/main/java/utilities/PopulateDatabase
