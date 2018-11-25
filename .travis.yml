@@ -12,3 +12,11 @@ before_script:
 
 script:
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+addons:
+  apt:
+   sources:
+    - mysql-5.7-trusty
+   packages:
+    - mysql-server
+    - mysql-client
